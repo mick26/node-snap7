@@ -22,10 +22,6 @@ typedef struct {
   word size;
 }TBufferInfo;
 
-static uv_async_t event_async_g;
-static uv_async_t rw_async_g;
-static uv_sem_t sem;
-
 class S7Server : public Nan::ObjectWrap {
  public:
   S7Server();
@@ -72,23 +68,12 @@ class S7Server : public Nan::ObjectWrap {
 
   uv_mutex_t mutex;
   TS7Server *snap7Server;
-  std::map<int, std::map<int, TBufferInfo>> area2buffer;
+  std::map<int, std::map<int, TBufferInfo> > area2buffer;
 
  private:
   ~S7Server();
   static Nan::Persistent<v8::FunctionTemplate> constructor;
 };
-
-static struct event_baton_t {
-  TSrvEvent SrvEvent;
-} event_baton_g;
-
-static struct rw_event_baton_t {
-  int Sender;
-  int Operation;
-  TS7Tag Tag;
-  void *pUsrData;
-} rw_event_baton_g;
 
 class IOWorkerServer : public Nan::AsyncWorker {
  public:

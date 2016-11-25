@@ -8,6 +8,21 @@
 
 namespace node_snap7 {
 
+static uv_async_t event_async_g;
+static uv_async_t rw_async_g;
+static uv_sem_t sem;
+
+static struct event_baton_t {
+  TSrvEvent SrvEvent;
+} event_baton_g;
+
+static struct rw_event_baton_t {
+  int Sender;
+  int Operation;
+  TS7Tag Tag;
+  void *pUsrData;
+} rw_event_baton_g;
+
 void S7API EventCallBack(void *usrPtr, PSrvEvent PEvent, int Size) {
   event_baton_g.SrvEvent = *PEvent;
 
@@ -922,7 +937,7 @@ NAN_METHOD(S7Server::RegisterArea) {
     s7server->area2buffer[area][index].pBuffer = data;
     s7server->area2buffer[area][index].size = size;
   } else {
-    delete data;
+    delete[] data;
   }
 
   info.GetReturnValue().Set(Nan::New<v8::Boolean>(ret == 0));

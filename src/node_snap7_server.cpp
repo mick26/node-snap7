@@ -608,7 +608,7 @@ NAN_METHOD(S7Server::RWBufferCallback) {
     byteCount = S7Server::GetByteCountFromWordLen(rw_event_baton_g.Tag.WordLen);
     size = byteCount * rw_event_baton_g.Tag.Size;
 
-    if (node::Buffer::Length(info[0]) < size) {
+    if (node::Buffer::Length(info[0].As<v8::Object>()) < size) {
       return Nan::ThrowTypeError("Buffer length too small");
     } else {
       memcpy(
@@ -913,14 +913,14 @@ NAN_METHOD(S7Server::RegisterArea) {
     }
 
     index = info[1]->Int32Value();
-    len = node::Buffer::Length(info[2]);
-    pBuffer = node::Buffer::Data(info[2]);
+    len = node::Buffer::Length(info[2].As<v8::Object>());
+    pBuffer = node::Buffer::Data(info[2].As<v8::Object>());
   } else if (!node::Buffer::HasInstance(info[1])) {
     return Nan::ThrowTypeError("Wrong arguments");
   } else {
     index = 0;
-    len = node::Buffer::Length(info[1]);
-    pBuffer = node::Buffer::Data(info[1]);
+    len = node::Buffer::Length(info[1].As<v8::Object>());
+    pBuffer = node::Buffer::Data(info[1].As<v8::Object>());
   }
 
   if (len > 0xFFFF) {
@@ -997,14 +997,14 @@ NAN_METHOD(S7Server::SetArea) {
       return Nan::ThrowError("DB index not found");
     }
 
-    len = node::Buffer::Length(info[2]);
-    pBuffer = node::Buffer::Data(info[2]);
+    len = node::Buffer::Length(info[2].As<v8::Object>());
+    pBuffer = node::Buffer::Data(info[2].As<v8::Object>());
   } else if (!node::Buffer::HasInstance(info[1])) {
     return Nan::ThrowTypeError("Wrong arguments");
   } else {
     index = 0;
-    len = node::Buffer::Length(info[1]);
-    pBuffer = node::Buffer::Data(info[1]);
+    len = node::Buffer::Length(info[1].As<v8::Object>());
+    pBuffer = node::Buffer::Data(info[1].As<v8::Object>());
   }
 
   if (len != s7server->area2buffer[area][index].size) {
